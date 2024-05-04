@@ -1,0 +1,91 @@
+"name"='Simple'
+      
+"By"='FATMA ELKASSABY'
+    
+
+"Start Symbol" = <Simple>
+
+!---terminal----
+ Id = [_]+{letter}* 
+ Dg = ('-'|'+')?{digit}+('.'{digit}+)? (('e'|('-'|'+')?{digit}+)'^'('-'|'+')?{digit}+('.'{digit}+)?)?
+ str = {letter}+{digit}*   
+ 
+!----rules------
+
+<Simple> ::= open'{' <code> '}'shutdown 
+         
+<code>::= <comment>
+         |<definition>
+         |<definition><code>
+         |<comment><definition><code>
+         
+<comment>::='.#' <id> '#.'
+          
+<id> ::= Id   
+         
+<definition>::= <method>
+             |<callmethod>
+             |<assign>
+             |<if_stm>
+             |<loop_stm>
+             
+<method> ::= fun <id> '[' <paramets> ']' '::' begin <definition> finish'.'
+          
+<paramets>::= <datatype> <id>|<digit>|<paramets>','<paramets> 
+             
+<callmethod>::= fun <id> '[' <paramets> ']''.' 
+                         
+<assign>::= data '('<id>')' <datatype> '=' <expr> '.' 
+         
+<datatype>::= int|float|string
+       
+<expr>::=<expr>'+'<div>
+       |<expr>'-'<div>
+       |<div>
+       
+<div>::= <div>'*'<fact>
+         |<div>'/'<fact>
+         |<div>'%'<fact>
+         |<fact>
+         
+<fact>::= <fact>'**'<neg>
+          |<neg>
+          
+<neg>::= '-' <value>
+        |<value>
+        
+<value>::= '('<value>')'
+      |<id>
+      |<digit>
+      |<str>
+      
+<str>::= '//' str '\\'
+      
+<digit>::= Dg 
+        
+  
+        
+!------if--------
+<if_stm>::= if '(' <con> ')''::' begin <definition> finish '$' 
+           | if <con> '::' begin <definition> finish '$' else '::' <definition> '$'
+           
+<con> ::= <expr> <op> <expr>
+       
+<op> ::= '<'
+      |'.='
+      |'=='
+      |'>'
+      |'<='
+      |'>='
+      
+!------loop--------
+
+<loop_stm>::= <assign> Loop <con>  begin <definition> <verb> finish '$'
+           
+<verb>::='--'<id>
+       |<id>'--'
+       |'++'<id>
+       |<id>'++'
+       |<assign>
+       
+
